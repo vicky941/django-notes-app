@@ -1,34 +1,33 @@
 pipeline {
-    agent any 
+    agent any
     
-    stages{
-        stage("Clone Code"){
+    stages {
+        stage('code'){
             steps {
-                echo "Cloning the code"
-                git url:"https://github.com/LondheShubham153/django-notes-app.git", branch: "main"
+                echo "cloning the code"
+                git url: "https://github.com/vicky941/django-notes-app.git", branch: "main"
             }
         }
-        stage("Build"){
+        stage('build'){
             steps {
-                echo "Building the image"
-                sh "docker build -t my-note-app ."
+                echo "build the image"
+                sh "docker build -t mynotes-app ."
             }
         }
-        stage("Push to Docker Hub"){
+        stage('push to Docker Hub'){
             steps {
-                echo "Pushing the image to docker hub"
-                withCredentials([usernamePassword(credentialsId:"dockerHub",passwordVariable:"dockerHubPass",usernameVariable:"dockerHubUser")]){
-                sh "docker tag my-note-app ${env.dockerHubUser}/my-note-app:latest"
-                sh "docker login -u ${env.dockerHubUser} -p ${env.dockerHubPass}"
-                sh "docker push ${env.dockerHubUser}/my-note-app:latest"
+                echo "pushing the image to docker hub"
+                withCredentials([usernamePassword(credentialsId: "dockerHub", passwordVariable: "VICKY@7287", usernameVariable: "venky7287")]){
+                    sh "docker tag mynotes-app venky7287/mynotes-app:latest"
+                    sh "docker login -u venky7287 -p VICKY@7287"
+                    sh "docker push venky7287/mynotes-app:latest"
                 }
             }
         }
-        stage("Deploy"){
+        stage('deploy'){
             steps {
-                echo "Deploying the container"
-                sh "docker-compose down && docker-compose up -d"
-                
+                echo "deploying the container"
+                sh "docker run -d -p 8000:8000 venky7287/mynotes-app:latest"
             }
         }
     }
